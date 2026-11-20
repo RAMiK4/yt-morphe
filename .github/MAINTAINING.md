@@ -4,8 +4,8 @@
 
 1. **Source APK** — the original YouTube APK (arm64, full APK) is attached to the draft release `source`. Replace it when a new YouTube version is supported. Do not delete or publish this draft.
 2. **Actions → Release YT Morphe → Run workflow**
-   - `patches`: `stable` (latest stable Morphe release) or `dev` (latest dev release)
-   - `publish`: unchecked builds a test APK into the run's *Artifacts* only
+   - `rlx`: `release` (latest RLX Patches release), a release tag such as `v2.4.6`, or a branch of RLX Patches (test builds only)
+   - `publish`: unchecked builds a test APK (Original_BBK only) into the run's *Artifacts* only
    - `update_preview` (test builds): the APK offers the latest release, to see the update dialog
    - `r2_test` (test builds, with `update_preview`): the APK and its update info are uploaded to R2 as test files (`apk/test_*`, `updates/*-test.json`) and the APK checks those; the next published build removes them
 
@@ -13,9 +13,16 @@ The changelog of a published release is generated again, without a new build, wi
 
 Old releases are removed with **Actions → Remove old releases** (`keep`: the newest published releases to keep; drafts such as `source` are never removed).
 
-Every published build becomes the latest release. The workflow builds the official Morphe patches with the changes in `addons/morphe/` and the additions in `extras/`, applies them together with the latest YaVoT release (built from source with the fixes in `addons/yavot/`), verifies package name and signature, uploads the two APKs to R2, publishes the release (`YT_Morphe_PRO_Settings_v<patches version>.txt` with the settings of `settings/defaults.json`, and links to the APKs on R2) and updates `updates/*.json` for the in-app update check.
+Every published build becomes the latest release. The workflow builds [RLX Patches](https://github.com/Ramik4/rlx-patches) from source with the additions in `extras/` (update checker, experimental notice), patches the source APK with the patches RLX Patches enables by default, verifies package name and signature, uploads the two APKs to R2, publishes the release (links to the APKs on R2) and updates `updates/*.json` for the in-app update check. RLX Patches already has the settings, theme colors, icons, voice-over translation and Save to device, so the mod adds none of these.
 
-The changelog is generated from the Morphe changelog (YouTube only), newest first: a stable version lists the new features of its own section; a dev version lists the new features of all dev versions since the last one released here. Bug fixes and improvements are not listed one by one: the notes always end with the heading `🔧 Bug fixes and other improvements`, followed in the release notes by the reminder to install the downloaded APK from the Downloads folder. Only when a release skips versions (such as the first dev build after a stable one), important features of the skipped versions can be added under `## <patches version>` in `notes/extra-features.md`; they are listed after the Morphe new features of that version. The release notes and the in-app dialog show the same order, New Features, Mod Features (`notes/mod-features.md`), the closing heading, then the files (release notes only). Release notes use `##` headings (GitHub draws a thin rule under them), the in-app dialog shows each title bold with a thin rule under it. Optional translations for the in-app dialog: `changelog/<language>.md` whose first line is `<!-- <patches version> -->`.
+| Variant | File | Package | Theme colors |
+|---|---|---|---|
+| `morphe` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Amoled.apk` | `app.morphe.android.youtube` | Pure black / white by default (Theme option `inAppDefaultColors`: `pure_black`) |
+| `hiby` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Original_BBK.apk` | `com.hiby.music` (Clone app) | RLX #0F0F0F / #F0F0F0 by default (`rlx`) |
+
+Test builds add the build number: `..._RLX-v<RLX>-b<build>_Original_BBK.apk`. Release tags are `v<YouTube>-rlx<RLX>-p<Morphe>-b<build>` (earlier releases: `v<YouTube>-p<Morphe>-b<build>`).
+
+The changelog is generated from the Morphe changelog included in RLX Patches (YouTube only), for the Morphe version RLX Patches is based on, newest first: a stable version lists the new features of its own section; a dev version lists the new features of all dev versions since the last one released here. Bug fixes and improvements are not listed one by one: the notes always end with the heading `🔧 Bug fixes and other improvements`, followed in the release notes by the reminder to install the downloaded APK from the Downloads folder. Only when a release skips versions (such as the first dev build after a stable one), important features of the skipped versions can be added under `## <Morphe version>` in `notes/extra-features.md`; they are listed after the Morphe new features of that version. The release notes and the in-app dialog show the same order, New Features, Mod Features (`notes/mod-features.md`), the closing heading, then the files (release notes only). Release notes use `##` headings (GitHub draws a thin rule under them), the in-app dialog shows each title bold with a thin rule under it. Optional translations for the in-app dialog: `changelog/<language>.md` whose first line is `<!-- <Morphe version> -->`.
 
 ## 4PDA post
 
@@ -31,13 +38,9 @@ The changelog is generated from the Morphe changelog (YouTube only), newest firs
 
 | File | Purpose |
 |---|---|
-| `settings/defaults.json` | Recommended settings (Morphe settings export). Each setting is applied once: on first install, or on the update that adds it. Importing settings (also a preset file) keeps the channel whitelists of ads, playback speed and SponsorBlock. |
-| `branding/` | App icon (`mipmap-*`), header logo and notification icon (`drawable-*`) |
-| `extras/` | Additional patches: theme defaults, default settings, update check, restart on update, experimental notice, Save to device. Strings and arrays of `extras/strings/<locale>/` are appended to the YouTube ones |
-| `addons/morphe/` | Changes of the mod to official Morphe files (`git apply` patches, such as features sent to Morphe that are not merged yet; skipped once Morphe includes them, the build fails if one no longer applies). Their new strings in other languages go to `extras/strings/`; strings that Morphe already has are left out |
-| `addons/yavot/` | Fixes applied to the YaVoT add-on before it is built (`git apply` patches; skipped once YaVoT includes them) |
+| `extras/` | Additional patches: update check and experimental notice. Strings of `extras/strings/<locale>/` are appended to the YouTube ones (the build fails if RLX Patches already has one of them). The update checker also turns off the patches update check of the RLX about page |
 
-Variant options (package, theme defaults) are set in `build_variant` calls of `.github/workflows/release.yml`.
+Variant options (package, theme colors) are set in `build_variant` calls of `.github/workflows/release.yml`. Settings, icons and theme defaults come from RLX Patches (`rlx/defaults.json` there).
 
 ## Downloads (Cloudflare R2)
 
