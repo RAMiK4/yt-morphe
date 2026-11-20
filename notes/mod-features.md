@@ -3,5 +3,5 @@
 * Google and Yandex voice-over translation (VoT)
 * Video, audio, thumbnail and subtitle downloader with Save to device and offline SponsorBlock
 * Recommended settings applied on first start, restorable with "Restore RLX default settings"
-* Two variants: Amoled (pure black) and Original_BBK (clone with the RLX colors)
+* Two variants with all in-app themes: Amoled (Pure Black / White by default) and Original_BBK (clone, Modern Dark / Soft Light by default)
 * In-app update check for new builds
