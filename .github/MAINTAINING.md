@@ -17,12 +17,12 @@ Every published build becomes the latest release. The workflow builds [RLX Patch
 
 | Variant | File | Package | Theme colors |
 |---|---|---|---|
-| `morphe` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Amoled.apk` | `app.morphe.android.youtube` | Pure black / white by default (Theme option `inAppDefaultColors`: `pure_black`, from RLX Patches 2.4.6; with 2.4.5 the RLX colors) |
-| `hiby` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Original_BBK.apk` | `com.hiby.music` (Clone app) | RLX #0F0F0F / #F0F0F0 by default (`rlx`) |
+| `morphe` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Amoled.apk` | `app.morphe.android.youtube` | All in-app themes, Pure Black / White by default (Theme option `inAppDefaultColors`: `pure_black`) |
+| `hiby` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Original_BBK.apk` | `com.hiby.music` (Clone app) | All in-app themes, Modern Dark #0F0F0F / Soft Light #F0F0F0 by default (`rlx`) |
 
 Test builds add the build number: `..._RLX-v<RLX>-b<build>_Original_BBK.apk`. Release tags are `v<YouTube>-rlx<RLX>-p<Morphe>-b<build>` (earlier releases: `v<YouTube>-p<Morphe>-b<build>`).
 
-The changelog is generated from the Morphe changelog included in RLX Patches (YouTube only), for the Morphe version RLX Patches is based on, newest first: a stable version lists the new features of its own section; a dev version lists the new features of all dev versions since the last one released here. Bug fixes and improvements are not listed one by one: the notes always end with the heading `🔧 Bug fixes and other improvements`, followed in the release notes by the reminder to install the downloaded APK from the Downloads folder. Only when a release skips versions (such as the first dev build after a stable one), important features of the skipped versions can be added under `## <Morphe version>` in `notes/extra-features.md`; they are listed after the Morphe new features of that version. The release notes and the in-app dialog show the same order, New Features, Mod Features (`notes/mod-features.md`), the closing heading, then the files (release notes only). Release notes use `##` headings (GitHub draws a thin rule under them), the in-app dialog shows each title bold with a thin rule under it. Optional translations for the in-app dialog: `changelog/<language>.md` whose first line is `<!-- <Morphe version> -->`.
+The changelog is generated from the Morphe changelog included in RLX Patches (YouTube only), for the Morphe version RLX Patches is based on, newest first: a stable version lists the new features of its own section; a dev version lists the new features of all dev versions since the last one released here. Morphe features that do not apply to the mod are listed in `notes/skipped-features.md` and left out. Bug fixes and improvements are not listed one by one: the notes always end with the heading `🔧 Bug fixes and other improvements`, followed in the release notes by the reminder to install the downloaded APK from the Downloads folder. Only when a release skips versions (such as the first dev build after a stable one), important features of the skipped versions can be added under `## <Morphe version>` in `notes/extra-features.md`; they are listed after the Morphe new features of that version. The release notes and the in-app dialog show the same order, New Features, Mod Features (`notes/mod-features.md`), the closing heading, then the files (release notes only). Release notes use `##` headings (GitHub draws a thin rule under them), the in-app dialog shows each title bold with a thin rule under it. Optional translations for the in-app dialog: `changelog/<language>.md` whose first line is `<!-- <Morphe version> -->`.
 
 ## 4PDA post
 
@@ -38,7 +38,7 @@ The changelog is generated from the Morphe changelog included in RLX Patches (Yo
 
 | File | Purpose |
 |---|---|
-| `addons/rlx/` | Changes of the mod to RLX Patches files (`git apply` patches, applied in name order; skipped once RLX Patches includes them, the build fails if one no longer applies): `settings-top-screens.patch` (Updates right below About, in RLX Patches after 2.4.5) |
+| `addons/rlx/` | Changes of the mod to RLX Patches files (`git apply` patches, applied in name order; skipped once RLX Patches includes them, the build fails if one no longer applies): `settings-top-screens.patch` (Updates right below About) and `theme-default-colors.patch` (the Theme option `inAppDefaultColors`), both in RLX Patches after 2.4.5 |
 | `extras/` | Additional patches: update check and experimental notice. Strings of `extras/strings/<locale>/` are appended to the YouTube ones (the build fails if RLX Patches already has one of them). The update checker also turns off the patches update check of the RLX about page |
 
 Variant options (package, theme colors) are set in `build_variant` calls of `.github/workflows/release.yml`. Settings, icons and theme defaults come from RLX Patches (`rlx/defaults.json` there).
