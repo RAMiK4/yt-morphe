@@ -17,7 +17,7 @@ Every published build becomes the latest release. The workflow builds [RLX Patch
 
 | Variant | File | Package | Theme colors |
 |---|---|---|---|
-| `morphe` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Amoled.apk` | `app.morphe.android.youtube` | Pure black / white by default (Theme option `inAppDefaultColors`: `pure_black`) |
+| `morphe` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Amoled.apk` | `app.morphe.android.youtube` | Pure black / white by default (Theme option `inAppDefaultColors`: `pure_black`, from RLX Patches 2.4.6; with 2.4.5 the RLX colors) |
 | `hiby` | `YouTube_Morphe-v<YouTube>_RLX-v<RLX>_Original_BBK.apk` | `com.hiby.music` (Clone app) | RLX #0F0F0F / #F0F0F0 by default (`rlx`) |
 
 Test builds add the build number: `..._RLX-v<RLX>-b<build>_Original_BBK.apk`. Release tags are `v<YouTube>-rlx<RLX>-p<Morphe>-b<build>` (earlier releases: `v<YouTube>-p<Morphe>-b<build>`).
@@ -38,6 +38,7 @@ The changelog is generated from the Morphe changelog included in RLX Patches (Yo
 
 | File | Purpose |
 |---|---|
+| `addons/rlx/` | Changes of the mod to RLX Patches files (`git apply` patches, applied in name order; skipped once RLX Patches includes them, the build fails if one no longer applies): `settings-top-screens.patch` (Updates right below About, in RLX Patches after 2.4.5) |
 | `extras/` | Additional patches: update check and experimental notice. Strings of `extras/strings/<locale>/` are appended to the YouTube ones (the build fails if RLX Patches already has one of them). The update checker also turns off the patches update check of the RLX about page |
 
 Variant options (package, theme colors) are set in `build_variant` calls of `.github/workflows/release.yml`. Settings, icons and theme defaults come from RLX Patches (`rlx/defaults.json` there).

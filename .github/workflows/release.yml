@@ -116,6 +116,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Changes of the mod to RLX Patches files (addons/rlx/*.patch, in name order: such as changes made in
+          # RLX Patches that are not released yet), skipped once RLX Patches includes them
+          for f in "$GITHUB_WORKSPACE"/addons/rlx/*.patch; do
+            [ -f "$f" ] || continue
+            if git apply --check "$f" 2>/dev/null; then
+              git apply "$f"
+              echo "Applied: $(basename "$f")"
+            elif git apply --check -R "$f" 2>/dev/null; then
+              echo "::notice::$(basename "$f") is already in RLX Patches $PATCHES_REF, skipped"
+            else
+              echo "::error::$(basename "$f") no longer applies to RLX Patches $PATCHES_REF"
+              exit 1
+            fi
+          done
           # Additional patches of the mod (extras/: update checker, experimental notice) are added to RLX Patches.
           # Extras only add files: the RLX files are never replaced.
           clash=0
@@ -311,12 +325,16 @@ jobs:
               # Theme colors changed in the app, starting with the colors of the variant
               | opt("Theme"; "darkThemeColor"; "in-app")
               | opt("Theme"; "lightThemeColor"; "in-app")
-              | opt("Theme"; "inAppDefaultColors"; $colors)
+              # The option is new in RLX Patches 2.4.6: without it the app starts with the RLX colors
+              | if .[0].patches["Theme"].options | has("inAppDefaultColors")
+                then opt("Theme"; "inAppDefaultColors"; $colors) else . end
               # Patches of the mod (extras/)
               | opt("Update checker"; "updateUrl"; $updurl)
               | opt("Update checker"; "buildNumber"; $build)
               | opt("Update checker"; "versionInfo"; $verinfo)
             ' "$RUNNER_TEMP/base.json" > "$opts"
+            jq -e '.[0].patches["Theme"].options | has("inAppDefaultColors")' "$opts" >/dev/null \
+              || echo "::notice::RLX Patches $RLX_VER has no option for the default colors in the app: $id starts with the RLX colors"
             jq -r '.[].patches | to_entries[] | select(.value.enabled) | "  ✓ \(.key)"' "$opts"
 
             java -jar "$RUNNER_TEMP/morphe-cli.jar" patch \
